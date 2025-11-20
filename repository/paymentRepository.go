@@ -10,7 +10,7 @@ type PaymentRepository interface {
 	Create(payment *models.Payment) error
 	GetById(id uint) (*models.Payment, error)
 	Delete(id uint) error
-	//ListByUserID(userID uint) ([]models.Payment, error)
+	ListByOrderID(orderID uint) ([]models.Payment, error)
 }
 
 type gormPaymentRepository struct {
@@ -38,4 +38,17 @@ func (r *gormPaymentRepository) GetById(id uint) (*models.Payment, error) {
 
 func (r *gormPaymentRepository) Delete(id uint) error {
 		return r.db.Delete(&models.Payment{}, id).Error
+}
+
+func (r *gormPaymentRepository) ListByOrderID(orderID uint) ([]models.Payment, error) {
+		var payments []models.Payment
+	err := r.db.
+		Model(&models.Payment{}).
+		Where("student_id = ?", orderID).
+		Find(&payments).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return payments, nil
 }
