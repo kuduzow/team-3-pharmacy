@@ -12,6 +12,8 @@ type PharmacyRepository interface {
 	Update(*models.Pharmacy) error
 
 	Delete(id uint) error
+
+	Get(*models.Pharmacy) error
 }
 
 type gormPharmacyRepository struct {
@@ -38,4 +40,11 @@ func (r *gormPharmacyRepository) Update(pharmacy *models.Pharmacy) error {
 
 func (r *gormPharmacyRepository) Delete(id uint) error {
 	return r.db.Delete(&models.Pharmacy{}, id).Error
+}
+
+func (r *gormPharmacyRepository) Get(pharmacy *models.Pharmacy) error {
+	if err := r.db.First(pharmacy).Error; err != nil {
+		return err
+	}
+	return nil
 }
