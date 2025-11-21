@@ -8,10 +8,11 @@ import (
 )
 
 type ReviewRepository interface {
-	Create(review *models.CreateReviewRequest) error
-	Update(review *models.UpdateReviewRequest) error
+	Create( *models.Review) error
+	Update(review *models.Review) error
 	Delete(id uint) error
 	GetReviewsByPharmacyID(pharmacyID uint) ([]models.Review, error)
+	GetByID(id uint)(*models.Review,error)
 }
 
 type gormReviewRepository struct {
@@ -22,7 +23,7 @@ func NewReviewRepository(db *gorm.DB) ReviewRepository {
 	return &gormReviewRepository{db: db}
 }
 
-func (r *gormReviewRepository) Create(review *models.CreateReviewRequest) error {
+func (r *gormReviewRepository) Create(review *models.Review) error {
 	if review == nil {
 		return errors.New("review is nil")
 	}
@@ -30,7 +31,7 @@ func (r *gormReviewRepository) Create(review *models.CreateReviewRequest) error 
 	return r.db.Create(review).Error
 }
 
-func (r *gormReviewRepository) Update(review *models.UpdateReviewRequest) error {
+func (r *gormReviewRepository) Update(review *models.Review) error {
 	if review == nil {
 		return errors.New("review is nil")
 	}
@@ -46,4 +47,12 @@ func (r *gormReviewRepository) GetReviewsByPharmacyID(pharmacyID uint) ([]models
 	var reviews []models.Review
 	err := r.db.Where("pharmacy_id = ?", pharmacyID).Find(&reviews).Error
 	return reviews, err		
+}
+
+func (r *gormReviewRepository) GetByID(id uint)(*models.Review, error){
+	var review models.Review
+	if err := r.db.First(&review,id).Error;err != nil{
+		return nil, err 
+	}
+	return &review, nil
 }
