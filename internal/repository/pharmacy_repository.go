@@ -14,6 +14,10 @@ type PharmacyRepository interface {
 	Delete(id uint) error
 
 	Get(*models.Pharmacy) error
+
+	GetByID(id uint) (*models.Pharmacy, error)
+
+	GetAll() ([]models.Pharmacy, error)
 }
 
 type gormPharmacyRepository struct {
@@ -47,4 +51,20 @@ func (r *gormPharmacyRepository) Get(pharmacy *models.Pharmacy) error {
 		return err
 	}
 	return nil
+}
+func (r *gormPharmacyRepository) GetByID(id uint) (*models.Pharmacy, error) {
+	var pharmacy models.Pharmacy
+
+	if err := r.db.First(&pharmacy, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &pharmacy, nil
+}
+func (r *gormPharmacyRepository) GetAll() ([]models.Pharmacy, error) {
+	var pharmacy []models.Pharmacy
+	if err := r.db.Find(&pharmacy).Error; err != nil {
+		return nil, err
+	}
+	return pharmacy, nil
 }
