@@ -1,4 +1,5 @@
 package service
+
 import (
 	"errors"
 	"pharmacy-team/internal/models"
@@ -14,7 +15,7 @@ type PaymentService interface {
 }
 
 type paymentService struct {
-	payRepo  repository.PaymentRepository
+	payRepo   repository.PaymentRepository
 	orderRepo repository.OrderRepository
 }
 
@@ -29,12 +30,12 @@ func (s *paymentService) Create(orderID uint, req models.PaymentCreate) (*models
 	}
 
 	if order.Status != models.OrderStatusPendingPayment && order.Status != models.OrderStatusPaid {
-		return nil, errors.New("нет такого закаса")
+		return nil, errors.New("нет такого заказа")
 	}
 
 	remaining := order.FinalPrice - order.PaidAmount
 	if req.Amount <= 0 || req.Amount > remaining {
-		return nil, errors.New("неправельная сумма")
+		return nil, errors.New("неправильная сумма")
 	}
 
 	if req.Status == models.PaySuccess && req.PaidAt.IsZero() {
@@ -42,11 +43,13 @@ func (s *paymentService) Create(orderID uint, req models.PaymentCreate) (*models
 	}
 
 	payment := &models.Payment{
+		OrderID: orderID, // <- это
 		Amount:  req.Amount,
 		Status:  req.Status,
 		Method:  req.Method,
 		PaidAt:  req.PaidAt,
 	}
+
 	payment.OrderID = orderID
 
 	if err = s.payRepo.Create(payment); err != nil {

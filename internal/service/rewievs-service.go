@@ -9,7 +9,7 @@ import (
 // /
 type ReviewService interface {
 	CreateReview(req models.CreateReviewRequest) (*models.Review, error)
-	UpdateReview(id uint,req models.UpdateReviewRequest) (*models.Review, error)
+	UpdateReview(id uint, req models.UpdateReviewRequest) (*models.Review, error)
 	DeleteReview(id uint) error
 	ListPharmacyReview(pharmacyID uint) ([]models.Review, error)
 }
