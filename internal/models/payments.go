@@ -29,7 +29,6 @@ type Payment struct {
 	Status  PayStatus        `json:"status" gorm:"column:status;type:varchar(20);not null"`
 	Method  PayMethod        `json:"method" gorm:"column:method;type:varchar(20);not null"`
 	PaidAt  time.Time        `json:"paid_at" gorm:"column:paid_at"`
-	Order Order
 }
 
 type PaymentCreate struct {
