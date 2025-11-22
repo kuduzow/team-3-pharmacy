@@ -15,6 +15,8 @@ type PharmacyService interface {
 	DeletePharmacy(id uint) error
 
 	GetPharmacy() ([]models.Pharmacy, error)
+
+	GetPharmacyByID(id uint) (*models.Pharmacy, error)
 }
 
 type pharmacyService struct {
@@ -23,6 +25,15 @@ type pharmacyService struct {
 
 func NewPharmacyService(pharmacy repository.PharmacyRepository) PharmacyService {
 	return &pharmacyService{pharmacy: pharmacy}
+}
+
+func (s *pharmacyService) GetPharmacyByID(id uint) (*models.Pharmacy, error) {
+	pharmacy, err := s.pharmacy.GetByID(id)
+	if err != nil {
+		return nil, errors.New("лекарство не найдено")
+	}
+
+	return pharmacy, nil
 }
 
 func (s *pharmacyService) CreatePharmacy(req models.PharmacyCreateRequest) (*models.Pharmacy, error) {
@@ -95,9 +106,7 @@ func (s *pharmacyService) validatePharmacyCreate(req models.PharmacyCreateReques
 	if req.StockQuantity < 0 {
 		return errors.New("на складе не может быть отрицательное количество товаров")
 	}
-	if !req.InStock && req.StockQuantity > 0 {
-		return errors.New("ошибка")
-	}
+
 	if !req.InStock && req.StockQuantity > 0 {
 		return errors.New("если товара нет на складе его не может быть в наличии")
 	}
