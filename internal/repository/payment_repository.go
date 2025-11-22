@@ -44,7 +44,7 @@ func (r *gormPaymentRepository) ListByOrderID(orderID uint) ([]models.Payment, e
 		var payments []models.Payment
 	err := r.db.
 		Model(&models.Payment{}).
-		Where("student_id = ?", orderID).
+		Where("order_id = ?", orderID).
 		Find(&payments).
 		Error
 	if err != nil {

@@ -1,4 +1,5 @@
 package service
+
 import (
 	"errors"
 	"pharmacy-team/internal/models"
@@ -14,7 +15,7 @@ type PaymentService interface {
 }
 
 type paymentService struct {
-	payRepo  repository.PaymentRepository
+	payRepo   repository.PaymentRepository
 	orderRepo repository.OrderRepository
 }
 
@@ -42,11 +43,13 @@ func (s *paymentService) Create(orderID uint, req models.PaymentCreate) (*models
 	}
 
 	payment := &models.Payment{
-		Amount:  req.Amount,
-		Status:  req.Status,
-		Method:  req.Method,
-		PaidAt:  req.PaidAt,
+		OrderID: orderID, // <- это 
+		Amount: req.Amount,
+		Status: req.Status,
+		Method: req.Method,
+		PaidAt: req.PaidAt,
 	}
+
 	payment.OrderID = orderID
 
 	if err = s.payRepo.Create(payment); err != nil {
