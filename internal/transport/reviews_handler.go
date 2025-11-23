@@ -17,7 +17,7 @@ func NewReviewsHandler(reviews service.ReviewService) *ReviewsHandler {
 }
 
 func (p *ReviewsHandler) Routes(r *gin.Engine) {
-	r.POST("/pharmacy/:id/review", p.Create)
+	r.POST("/pharmacy/:id/reviews", p.Create)
 	r.GET("/pharmacy/:id/reviews", p.GetListReviews)
 	r.PATCH("/reviews/:id", p.Update)
 	r.DELETE("/reviews/:id", p.Delete)
