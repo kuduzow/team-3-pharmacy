@@ -9,6 +9,9 @@ import (
 type UserRepository interface {
 	Create(user *models.User) error
 	GetByID(id uint) (*models.User, error)
+	GetAll() ([]models.User, error)
+	Update(*models.User) error
+	Delete(id uint) error
 }
 
 type gormUserRepository struct {
@@ -35,4 +38,25 @@ func (r *gormUserRepository) GetByID(id uint) (*models.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *gormUserRepository) GetAll() ([]models.User, error) {
+	var user []models.User
+
+	if err := r.db.Find(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (r *gormUserRepository) Update(pharmacy *models.User) error {
+	if pharmacy == nil {
+		return nil
+	}
+	return r.db.Save(pharmacy).Error
+}
+
+func (r *gormUserRepository) Delete(id uint) error {
+	return r.db.Delete(&models.User{}, id).Error
 }
