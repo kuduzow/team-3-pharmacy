@@ -13,6 +13,7 @@ type ReviewRepository interface {
 	Delete(id uint) error
 	GetReviewsByPharmacyID(pharmacyID uint) ([]models.Review, error)
 	GetByID(id uint)(*models.Review,error)
+	CanUserReviewMedicine(userID, medicineID uint) error
 }
 
 type gormReviewRepository struct {
@@ -24,6 +25,7 @@ func NewReviewRepository(db *gorm.DB) ReviewRepository {
 }
 
 func (r *gormReviewRepository) Create(review *models.Review) error {
+
 	if review == nil {
 		return errors.New("review is nil")
 	}
@@ -55,4 +57,20 @@ func (r *gormReviewRepository) GetByID(id uint)(*models.Review, error){
 		return nil, err 
 	}
 	return &review, nil
+}
+
+func (r *gormReviewRepository) CanUserReviewMedicine(userID, medicineID uint) error {
+	var dummy struct{}
+
+	err := r.db.Table("order_items").
+		Select("1").
+		Joins("JOIN orders o ON o.id = order_items.order_id").
+		Where("o.user_id = ? AND order_items.medicine_id = ?", userID, medicineID).
+		First(&dummy).Error
+
+	if err != nil {
+		return errors.New("пользователь не может оставить отзыв на это лекарство")
+	}
+
+	return nil
 }

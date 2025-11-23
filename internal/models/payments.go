@@ -32,15 +32,17 @@ type Payment struct {
 }
 
 type PaymentCreate struct {
-	OrderID uint      `json:"order_id"`
+	OrderID uint      `json:"order_id" gorm:"not null;index"`
 	Amount  int       `json:"amount"`
+	Status  PayStatus `json:"status"`
 	Method  PayMethod `json:"method"`
 	PaidAt  time.Time `json:"paid_at"`
-	Status  PayStatus `json:"status"`
 }
 
 type PaymentUpdate struct {
-	Amount *int       `json:"amount"`
-	Status *PayStatus `json:"status"`
-	Method *PayMethod `json:"method"`
+	OrderID uint       `json:"order_id" gorm:"not null;index"`
+	Amount  *int       `json:"amount"`
+	Status  *PayStatus `json:"status"`
+	Method  *PayMethod `json:"method"`
+	PaidAt  *time.Time `json:"paid_at"`
 }

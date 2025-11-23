@@ -30,6 +30,11 @@ func NewReviewService(
 }
 
 func (r *reviewService) CreateReview(req models.CreateReviewRequest) (*models.Review, error) {
+
+	if err := r.reviews.CanUserReviewMedicine(req.UserID, req.MedicineID); err != nil {
+		return nil, err
+	}
+
 	if err := r.validateReview(req); err != nil {
 		return nil, err
 	}
@@ -54,8 +59,8 @@ func (r *reviewService) validateReview(req models.CreateReviewRequest) error {
 	if req.MedicineID == 0 {
 		return errors.New("поле medicine_id должно быть больше 0")
 	}
-	if req.Rating < 1 && req.Rating > 5 {
-		return errors.New("Нет такой оценки")
+	if req.Rating < 1 || req.Rating > 5 {
+		return errors.New("нет такой оценки")
 	}
 	if req.Text == "" {
 		return errors.New("text не может быть пустым")
@@ -69,7 +74,6 @@ func (r *reviewService) UpdateReview(id uint, req models.UpdateReviewRequest) (*
 		return nil, errors.New("отзыв не найден")
 	}
 
-	// Обновляем только те поля, которые пришли
 	if req.Rating != nil {
 		review.Rating = *req.Rating
 	}
@@ -98,5 +102,28 @@ func (r *reviewService) ListPharmacyReview(pharmacyID uint) ([]models.Review, er
 		return nil, err
 	}
 
-	return r.reviews.GetReviewsByPharmacyID(pharmacyID)
+	reviews, err := r.reviews.GetReviewsByPharmacyID(pharmacyID)
+
+	var sum float64
+	for _, v := range reviews {
+		sum += v.Rating
+	}
+
+	avg := 0.0
+	if len(reviews) > 0 {
+		avg = sum / float64(len(reviews))
+	}
+
+	
+	for i := range reviews {
+		reviews[i].Rating = avg
+	}
+
+
+
+	if err != nil {
+		return nil, err
+	}
+
+	return reviews, nil
 }
