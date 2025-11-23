@@ -50,4 +50,15 @@ type OrderUpdateRequest struct {
 	PaymentStatus   *OrderPaymentStatus `json:"payment_status,omitempty"`
 	DeliveryAddress *string             `json:"delivery_address,omitempty"`
 	Comment         *string             `json:"comment,omitempty"`
+} 
+
+type OrderItem struct {
+	gorm.Model
+
+	OrderID       uint   `gorm:"not null;index"`
+	PharmacyID    uint   `gorm:"not null"`
+	PharmacyName  string `gorm:"type:varchar(255);not null"`
+	Quantity      int    `gorm:"not null"`
+	PricePerUnit  int    `gorm:"not null"`
+	LineTotal     int    `gorm:"not null"`
 }
