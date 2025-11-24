@@ -103,24 +103,7 @@ func (r *reviewService) ListPharmacyReview(pharmacyID uint) ([]models.Review, er
 	}
 
 	reviews, err := r.reviews.GetReviewsByPharmacyID(pharmacyID)
-
-	var sum float64
-	for _, v := range reviews {
-		sum += v.Rating
-	}
-
-	avg := 0.0
-	if len(reviews) > 0 {
-		avg = sum / float64(len(reviews))
-	}
-
-	
-	for i := range reviews {
-		reviews[i].Rating = avg
-	}
-
-
-
+ 
 	if err != nil {
 		return nil, err
 	}
