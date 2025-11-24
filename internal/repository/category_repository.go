@@ -8,7 +8,10 @@ import (
 
 type CategoryRepository interface {
 	Get(*[]models.Category) error
+
 	Create(*models.Category) error
+
+	GetSubcategories(categoryID uint) ([]models.SubCategory, error)
 }
 
 type gormCategoryRepository struct {
@@ -17,6 +20,14 @@ type gormCategoryRepository struct {
 
 func NewCategoryRepository(db *gorm.DB) CategoryRepository {
 	return &gormCategoryRepository{db: db}
+}
+
+func (r *gormCategoryRepository) GetSubcategories(categoryID uint) ([]models.SubCategory, error) {
+	var req []models.SubCategory
+	if err := r.db.Where("category_id = ?", categoryID).Find(&req).Error; err != nil {
+		return nil, err
+	}
+	return req, nil
 }
 
 func (r *gormCategoryRepository) Get(category *[]models.Category) error {
