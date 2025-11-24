@@ -10,7 +10,7 @@ type UserRepository interface {
 	Create(user *models.User) error
 	GetByID(id uint) (*models.User, error)
 	GetAll() ([]models.User, error)
-	Update(*models.User) error
+	Update(user *models.User) error
 	Delete(id uint) error
 }
 
@@ -50,11 +50,11 @@ func (r *gormUserRepository) GetAll() ([]models.User, error) {
 	return user, nil
 }
 
-func (r *gormUserRepository) Update(pharmacy *models.User) error {
-	if pharmacy == nil {
+func (r *gormUserRepository) Update(user *models.User) error {
+	if user == nil {
 		return nil
 	}
-	return r.db.Save(pharmacy).Error
+	return r.db.Save(user).Error
 }
 
 func (r *gormUserRepository) Delete(id uint) error {

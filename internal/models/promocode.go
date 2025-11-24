@@ -28,15 +28,27 @@ type Promocode struct {
 	IsActive       bool         `json:"is_active" gorm:"default:true"`
 }
 
-type PromocodeUsage struct {
-	gorm.Model
-	PromocodeID uint      `json:"promocode_id" `
-	UserID      uint      `json:"user_id" `
-	OrderID     uint      `json:"order_id" `
-	UsedAt      time.Time `json:"used_at"`
+type PromocodeCreate struct {
+	Code           string       `json:"code" `
+	Description    string       `json:"description" `
+	DiscountType   DiscountType `json:"discount_type"`
+	DiscountValue  float64      `json:"discount_value" `
+	MinOrderAmount float64      `json:"min_order_amount" `
+	ValidFrom      time.Time    `json:"valid_from" `
+	ValidTo        time.Time    `json:"valid_to" `
+	MaxUses        *int         `json:"max_uses" `
+	MaxUsesPerUser *int         `json:"max_uses_per_user" `
 }
 
-type ApplyPromocodeRequest struct {
-	Code    string `json:"code" `
-	OrderID uint   `json:"order_id"`
+type PromocodeUpdateRequest struct {
+	Code           *string       `json:"code"`
+	Description    *string       `json:"description"`
+	DiscountType   *DiscountType `json:"discount_type"`
+	DiscountValue  *float64      `json:"discount_value"`
+	ValidFrom      *time.Time    `json:"valid_from"`
+	ValidTo        *time.Time    `json:"valid_to"`
+	MinOrderAmount *float64      `json:"min_order_amount"`
+	MaxUses        *int          `json:"max_uses"`
+	MaxUsesPerUser *int          `json:"max_uses_per_user"`
+	IsActive       *bool         `json:"is_active"`
 }
