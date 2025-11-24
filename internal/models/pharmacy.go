@@ -14,6 +14,7 @@ type Pharmacy struct {
 	Manufacturer         string  `json:"manufacturer"`
 	PrescriptionRequired bool    `json:"prescription_required"`
 	AvgRating            float64 `json:"avg_rating"`
+	Category             *Category
 }
 
 type PharmacyCreateRequest struct {
@@ -27,6 +28,7 @@ type PharmacyCreateRequest struct {
 	Manufacturer         string  `json:"manufacturer"`
 	PrescriptionRequired bool    `json:"prescription_required"`
 	AvgRating            float64 `json:"avg_rating"`
+	Category             *Category
 }
 
 type PharmacyUpdateRequest struct {
@@ -40,4 +42,5 @@ type PharmacyUpdateRequest struct {
 	Manufacturer         *string  `json:"manufacturer"`
 	PrescriptionRequired *bool    `json:"prescription_required"`
 	AvgRating            *float64 `json:"avg_rating"`
+	Category             *Category
 }

@@ -17,6 +17,8 @@ type PharmacyRepository interface {
 
 	GetByID(id uint) (*models.Pharmacy, error)
 
+	GetWithCategory(id uint) (*models.Pharmacy, error)
+
 	GetAll() ([]models.Pharmacy, error)
 }
 
@@ -26,6 +28,27 @@ type gormPharmacyRepository struct {
 
 func NewPharmacyRepository(db *gorm.DB) PharmacyRepository {
 	return &gormPharmacyRepository{db: db}
+}
+
+func (r *gormPharmacyRepository) GetWithCategory(id uint) (*models.Pharmacy, error) {
+	var pharmacy models.Pharmacy
+
+	if err := r.db.First(&pharmacy, id).Error; err != nil {
+		return nil, err
+	}
+
+	var category models.Category
+	if err := r.db.First(&category, pharmacy.CategoryID).Error; err != nil {
+		return &pharmacy, nil
+	}
+
+	var req []models.SubCategory
+	if err := r.db.Where("category_id = ?", category.ID).Find(&req).Error; err == nil {
+		category.SubCategory = req
+	}
+
+	pharmacy.Category = &category
+	return &pharmacy, nil
 }
 
 func (r *gormPharmacyRepository) Create(pharmacy *models.Pharmacy) error {
@@ -39,6 +62,7 @@ func (r *gormPharmacyRepository) Update(pharmacy *models.Pharmacy) error {
 	if pharmacy == nil {
 		return nil
 	}
+
 	return r.db.Save(pharmacy).Error
 }
 
