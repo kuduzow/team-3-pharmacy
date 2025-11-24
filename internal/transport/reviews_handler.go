@@ -17,7 +17,7 @@ func NewReviewsHandler(reviews service.ReviewService) *ReviewsHandler {
 }
 
 func (p *ReviewsHandler) Routes(r *gin.Engine) {
-	r.POST("/pharmacy/:id/review", p.Create)
+	r.POST("/pharmacy/:id/reviews", p.Create)
 	r.GET("/pharmacy/:id/reviews", p.GetListReviews)
 	r.PATCH("/reviews/:id", p.Update)
 	r.DELETE("/reviews/:id", p.Delete)
@@ -33,13 +33,11 @@ func (p *ReviewsHandler) Create(c *gin.Context) {
 	}
 	medicineID := uint(medicineIDS)
 
-	
 	var req models.CreateReviewRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-
 
 	req.MedicineID = medicineID
 	review, err := p.reviews.CreateReview(req)
@@ -50,7 +48,7 @@ func (p *ReviewsHandler) Create(c *gin.Context) {
 	c.JSON(201, review)
 }
 
-func (r *ReviewsHandler) GetListReviews (c *gin.Context) {
+func (r *ReviewsHandler) GetListReviews(c *gin.Context) {
 	idstr := c.Param("id")
 
 	pharmacyID, err := strconv.ParseUint(idstr, 10, 64)
@@ -59,7 +57,7 @@ func (r *ReviewsHandler) GetListReviews (c *gin.Context) {
 		return
 	}
 
-	reviews, err := r.reviews.ListPharmacyReview (uint(pharmacyID))
+	reviews, err := r.reviews.ListPharmacyReview(uint(pharmacyID))
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -96,8 +94,6 @@ func (r *ReviewsHandler) Delete(c *gin.Context) {
 	if err := r.reviews.DeleteReview(uint(reviewID)); err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
-	}	
+	}
 	c.JSON(200, gin.H{"message": "отзыв успешно удален"})
 }
-
-
