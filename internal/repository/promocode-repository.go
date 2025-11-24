@@ -7,7 +7,7 @@ import (
 )
 
 type PromocodeRepository interface {
-	Create(promocode *models.PromocodeCreate) error
+	Create(promocode *models.Promocode) error
 	GetByID(id uint) (*models.Promocode, error)
 	GetAll() ([]models.Promocode, error)
 	Update(*models.Promocode) error
@@ -22,7 +22,7 @@ func NewPromocodeRepository(db *gorm.DB) PromocodeRepository {
 	return &gormPromocodeRepository{db: db}
 }
 
-func (r *gormPromocodeRepository) Create(promocode *models.PromocodeCreate) error {
+func (r *gormPromocodeRepository) Create(promocode *models.Promocode) error {
 	if promocode == nil {
 		return nil
 	}

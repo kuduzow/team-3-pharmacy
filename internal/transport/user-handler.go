@@ -20,13 +20,11 @@ func NewUserHandler(service service.UserService) *UserHandler {
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var req models.UserCreate
 
-	// Получаем данные из запроса
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(400, gin.H{"err": "Неверные данные"})
 		return
 	}
 
-	// Вызываем сервис
 	user, err := h.service.CreateUser(req)
 	if err != nil {
 		c.JSON(400, gin.H{
