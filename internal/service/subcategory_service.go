@@ -44,7 +44,7 @@ func (c *subCategoryService) validateSubCategoryCreate(categoryID uint, req mode
 		return errors.New("айди не может быть отрицательным")
 	}
 
-	if categoryID < 0 {
+	if categoryID > 0 {
 		return errors.New("айди категории не может быть отрицательны")
 	}
 
