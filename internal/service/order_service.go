@@ -1,53 +1,72 @@
 package service
 
 import (
+	"errors"
 	"pharmacy-team/internal/models"
 	"pharmacy-team/internal/repository"
-	"time"
 )
 
-type OrderService struct {
-	orderRepo   repository.OrderRepository
-	paymentRepo repository.PaymentRepository
+type OrderService interface {
+	CreateOrder(userID uint, req models.OrderCreate) (*models.Order, error)
+	GetOrder(id uint) (*models.Order, error)
+	GetUserOrders(userID uint) ([]models.Order, error)
+	UpdateStatus(id uint, status models.OrderStatus) (*models.Order, error)
 }
 
-func NewOrderService(orderRepo repository.OrderRepository, paymentRepo repository.PaymentRepository) *OrderService {
-	return &OrderService{
-		orderRepo:   orderRepo,
-		paymentRepo: paymentRepo,
+type orderService struct {
+	repo       repository.OrderRepository
+	// cart       CartService
+	// promocodes PromocodeService
+}
+
+func NewOrderService(repo repository.OrderRepository, /*cart CartService, promo PromocodeService*/) OrderService {
+	return &orderService{repo: repo, /*cart: cart, promocodes: promo*/}
+}
+
+func (s *orderService) CreateOrder(userID uint, req models.OrderCreate) (*models.Order, error) {
+	order := &models.Order{
+		UserID:          userID,
+		Status:          models.OrderStatusPendingPayment,
+		PaymentStatus:   models.OrderPaymentNotPaid,
+		DeliveryAddress: req.DeliveryAddress,
+		Comment:         req.Comment,
+		TotalPrice:      0,  
+		DiscountTotal:   0,
+		FinalPrice:      0,
+		Items:           []models.OrderItem{},
 	}
-}
 
-func (s *OrderService) CreateOrder(order *models.Order) (*models.Order, error) {
-	var total int = 0
-	for i := range order.Items {
-	order.Items[i].LineTotal = order.Items[i].Quantity * order.Items[i].PricePerUnit
-	total += order.Items[i].LineTotal
-}
-
-	order.TotalPrice = total
-	order.FinalPrice = total - order.DiscountTotal
-	order.Status = models.OrderStatusPendingPayment
-	order.CreatedAt = time.Now()
-	order.UpdatedAt = time.Now()
-
-	if err := s.orderRepo.Create(order); err != nil {
+	if err := s.repo.Create(order); err != nil {
 		return nil, err
 	}
 
 	return order, nil
 }
 
-func (s *OrderService) GetOrderByID(id uint) (*models.Order, error) {
-	order, err := s.orderRepo.GetById(id)
+
+func (s *orderService) GetOrder(id uint) (*models.Order, error) {
+	return s.repo.GetByID(id)
+}
+
+func (s *orderService) GetUserOrders(userID uint) ([]models.Order, error) {
+	return s.repo.GetByUserID(userID)
+}
+
+func (s *orderService) UpdateStatus(id uint, status models.OrderStatus) (*models.Order, error) {
+	order, err := s.repo.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
-	return order, nil
+
+	if order.Status == models.OrderStatusPaid && status == models.OrderStatusPendingPayment {
+    return nil, errors.New("так нельзя")
 }
 
-func (s *OrderService) UpdateOrderStatus(order *models.Order, newStatus models.OrderStatus) error {
-	order.Status = newStatus
-	order.UpdatedAt = time.Now()
-	return s.orderRepo.Update(order)
+	order.Status = status
+
+	if err := s.repo.Update(order); err != nil {
+		return nil, err
+	}
+
+	return order, nil
 }

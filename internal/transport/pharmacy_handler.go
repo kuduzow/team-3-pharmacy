@@ -16,7 +16,6 @@ type PharmacyHandler struct {
 func NewPharmacyHandler(service service.PharmacyService) *PharmacyHandler {
 	return &PharmacyHandler{service: service}
 }
-
 func (p *PharmacyHandler) RegisterRoutes(r *gin.Engine) {
 	r.POST("/pharmacy", p.Create)
 	r.GET("/pharmacy", p.Get)
