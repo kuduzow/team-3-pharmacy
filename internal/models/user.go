@@ -11,9 +11,6 @@ type User struct {
 	DefaultAddress string `json:"default_address" gorm:"type:varchar(255);not null"`
 
 	//Cart    Cart    `json:"carts" gorm:"foreignKey:UserID"`
-	Orders   []Order   `json:"orders" gorm:"foreignKey:UserID"`
-	Reviews  []Review  `json:"reviews" gorm:"foreignKey:UserID"`
-	Payments []Payment `json:"payments" gorm:"foreignKey:UserID"`
 }
 
 type UserCreate struct {
