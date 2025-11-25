@@ -21,26 +21,31 @@ const (
 	OrderPaymentPaid          OrderPaymentStatus = "paid"
 )
 
+
+
 type Order struct {
-	gorm.Model
+    gorm.Model
 
-	UserID          uint               `gorm:"not null;index"`
-	Status          OrderStatus        `gorm:"type:varchar(30);default:'pending_payment'"`
-	PaymentStatus   OrderPaymentStatus `gorm:"type:varchar(30);default:'not_paid'"`
-	TotalPrice      int                `gorm:"not null"`
-	DiscountTotal   int                `gorm:"default:0"`
-	FinalPrice      int                `gorm:"not null"`
-	PaidAmount      int                `gorm:"default:0"`
-	DeliveryAddress string             `gorm:"type:text;not null"`
-	Comment         string             `gorm:"type:text"`
-	PromoCode       *string            `gorm:"type:varchar(50)"`
+    UserID uint `gorm:"not null;index"`
 
-	Items    []OrderItem 
-	Payments []Payment   
+    Status          OrderStatus        `gorm:"type:varchar(30);default:'pending_payment'"`
+    PaymentStatus   OrderPaymentStatus `gorm:"type:varchar(30);default:'not_paid'"`
+    TotalPrice      int                `gorm:"not null"`
+    DiscountTotal   int                `gorm:"default:0"`
+    FinalPrice      int                `gorm:"not null"`
+    PaidAmount      int                `gorm:"default:0"`
+    DeliveryAddress string             `gorm:"type:text;not null"`
+    Comment         string             `gorm:"type:text"`
+    PromoCode       *string            `gorm:"type:varchar(50)"`
+
+    Items []OrderItem `gorm:"foreignKey:OrderID"`
+
+    Payments []Payment `gorm:"foreignKey:OrderID"`
 }
 
+
 type OrderCreate struct {
-	DeliveryAddress string  `json:"delivery_address" binding:"required"`
+	DeliveryAddress string  `json:"delivery_address"`
 	Comment         string  `json:"comment,omitempty"`
 	PromoCode       *string `json:"promocode,omitempty"`
 }
@@ -53,12 +58,14 @@ type OrderUpdate struct {
 } 
 
 type OrderItem struct {
-	gorm.Model
+    gorm.Model
 
-	OrderID       uint   `gorm:"not null;index"`
-	PharmacyID    uint   `gorm:"not null"`
-	PharmacyName  string `gorm:"type:varchar(255);not null"`
-	Quantity      int    `gorm:"not null"`
-	PricePerUnit  int    `gorm:"not null"`
-	LineTotal     int    `gorm:"not null"`
+    OrderID      uint   `gorm:"not null;index"`
+    PharmacyID   uint   `gorm:"not null"`
+    PharmacyName string `gorm:"type:varchar(255);not null"`
+    Quantity     int    `gorm:"not null"`
+    PricePerUnit int    `gorm:"not null"`
+    LineTotal    int    `gorm:"not null"`
+
+    Order Order `gorm:"foreignKey:OrderID"`
 }
