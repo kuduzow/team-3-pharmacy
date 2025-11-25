@@ -35,17 +35,17 @@ type Order struct {
 	Comment         string             `gorm:"type:text"`
 	PromoCode       *string            `gorm:"type:varchar(50)"`
 
-	Items    []OrderItem `gorm:"constraint:OnDelete:CASCADE"`
-	Payments []Payment   `gorm:"constraint:OnDelete:SET NULL"`
+	Items    []OrderItem 
+	Payments []Payment   
 }
 
-type OrderCreateRequest struct {
+type OrderCreate struct {
 	DeliveryAddress string  `json:"delivery_address" binding:"required"`
 	Comment         string  `json:"comment,omitempty"`
 	PromoCode       *string `json:"promocode,omitempty"`
 }
 
-type OrderUpdateRequest struct {
+type OrderUpdate struct {
 	Status          *OrderStatus        `json:"status,omitempty"`
 	PaymentStatus   *OrderPaymentStatus `json:"payment_status,omitempty"`
 	DeliveryAddress *string             `json:"delivery_address,omitempty"`

@@ -24,7 +24,7 @@ func NewPaymentService(payRepo repository.PaymentRepository, orderRepo repositor
 }
 
 func (s *paymentService) Create(orderID uint, req models.PaymentCreate) (*models.Payment, error) {
-	order, err := s.orderRepo.GetById(orderID)
+	order, err := s.orderRepo.GetByID(orderID)
 	if err != nil {
 		return nil, errors.New("не нашлось")
 	}
@@ -79,7 +79,7 @@ func (s *paymentService) Delete(id uint) error {
 		return err
 	}
 	if pay.Status == models.PaySuccess {
-		order, _ := s.orderRepo.GetById(pay.OrderID)
+		order, _ := s.orderRepo.GetByID(pay.OrderID)
 		order.PaidAmount -= pay.Amount
 		if order.PaidAmount <= 0 {
 			order.PaidAmount = 0

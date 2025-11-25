@@ -1,7 +1,6 @@
 package transport
 
 import (
-	"net/http"
 	"pharmacy-team/internal/models"
 	"pharmacy-team/internal/service"
 	"strconv"
@@ -28,17 +27,17 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 
 	var req models.PaymentCreate
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	payment, err := h.servicePayment.Create(uint(orderID),req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, payment)
+	c.JSON(201, payment)
 }
 
 func (h *PaymentHandler) GetPaymentsByOrder(c *gin.Context) {
@@ -46,26 +45,26 @@ func (h *PaymentHandler) GetPaymentsByOrder(c *gin.Context) {
 
 	payments, err := h.servicePayment.ListByOrder(uint(orderID))
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(404, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, payments)
+	c.JSON(200, payments)
 }
 func (t *PaymentHandler) GetPaymentById(c *gin.Context) {
     id := c.Param("id")
 
     paymentID, err := strconv.ParseUint(id, 10, 64)
     if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "invalid payment id"})
+        c.JSON(400, gin.H{"error": "invalid payment id"})
         return
     }
 
     payment, err := t.servicePayment.Get(uint(paymentID))
     if err != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+        c.JSON(404, gin.H{"error": err.Error()})
         return
     }
 
-    c.JSON(http.StatusOK, payment)
+    c.JSON(200, payment)
 }
