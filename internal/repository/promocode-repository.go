@@ -2,6 +2,7 @@ package repository
 
 import (
 	"pharmacy-team/internal/models"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -63,4 +64,19 @@ func (r *gormPromocodeRepository) Delete(id uint) error {
 	}
 
 	return nil
+}
+
+func (r *gormPromocodeRepository) GetByCode(code string) (*models.Promocode, error) {
+	var promocode models.Promocode
+	if err := r.db.Where("code = ?", code).First(&promocode).Error; err != nil {
+		return nil, err
+	}
+	return &promocode, nil
+}
+
+func (r *gormPromocodeRepository) GetActive() ([]models.Promocode, error) {
+	var promocodes []models.Promocode
+	now := time.Now()
+	err := r.db.Where("is_active = ? AND valid_from <= ? AND valid_to >= ?", true, now, now).Find(&promocodes).Error
+	return promocodes, err
 }
