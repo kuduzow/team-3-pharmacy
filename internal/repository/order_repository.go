@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"fmt"
+	
 	"pharmacy-team/internal/models"
 
 	"gorm.io/gorm"
@@ -36,7 +36,7 @@ func (r *orderRepository) GetByUserID(userID uint) ([]models.Order, error) {
 	var orders []models.Order
 	err := r.db.Where("user_id = ?", userID).Find(&orders).Error
 	if err != nil {
-		fmt.Errorf("error",err)
+		return nil,err
 	}
 	return orders, err
 }
