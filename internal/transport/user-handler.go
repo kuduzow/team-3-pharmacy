@@ -125,6 +125,14 @@ func (h *UserHandler) GetAllUsers(c *gin.Context) {
 	c.JSON(200, users)
 }
 
+func (h *UserHandler) GetUserOrders(c *gin.Context) {
+	c.JSON(400, gin.H{"error": "Еще не реализовано"})
+}
+
+func (h *UserHandler) GetUserCart(c *gin.Context) {
+	c.JSON(400, gin.H{"error": "Еще не реализовано"})
+}
+
 func (h *UserHandler) RegisterRoutes(r *gin.Engine) {
 	users := r.Group("/users")
 	{
@@ -133,5 +141,8 @@ func (h *UserHandler) RegisterRoutes(r *gin.Engine) {
 		users.PATCH("/:id", h.UpdateUser)
 		users.DELETE("/:id", h.DeleteUser)
 		users.GET("", h.GetAllUsers)
+
+		users.GET("/:id/orders", h.GetUserOrders)
+		users.GET("/:id/cart", h.GetUserCart)
 	}
 }
