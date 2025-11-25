@@ -17,6 +17,7 @@ type ReviewService interface {
 type reviewService struct {
 	reviews  repository.ReviewRepository
 	pharmacy repository.PharmacyRepository
+	order    repository.OrderRepository
 }
 
 func NewReviewService(
@@ -103,7 +104,7 @@ func (r *reviewService) ListPharmacyReview(pharmacyID uint) ([]models.Review, er
 	}
 
 	reviews, err := r.reviews.GetReviewsByPharmacyID(pharmacyID)
- 
+
 	if err != nil {
 		return nil, err
 	}
