@@ -10,10 +10,7 @@ type User struct {
 	Phone          string `json:"phone" gorm:"type:varchar(255);not null"`
 	DefaultAddress string `json:"default_address" gorm:"type:varchar(255);not null"`
 
-	//Cart    Cart    `json:"-" gorm:"foreignKey:UserID"`
-	Orders   []Order   `json:"-" gorm:"foreignKey:UserID"`
-	Reviews  []Review  `json:"-" gorm:"foreignKey:UserID"`
-	Payments []Payment `json:"-" gorm:"foreignKey:UserID"`
+	//Cart    Cart    `json:"carts" gorm:"foreignKey:UserID"`
 }
 
 type UserCreate struct {
