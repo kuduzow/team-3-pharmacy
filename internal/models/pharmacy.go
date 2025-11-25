@@ -9,8 +9,8 @@ type Pharmacy struct {
 	Price                float64 `json:"price"`
 	InStock              bool    `json:"in_stock"`
 	StockQuantity        int     `json:"stock_quantity"`
-	CategoryID           string  `json:"category_id"`
-	SubcategoryID        string  `json:"Subcategory_id"`
+	CategoryID           uint    `json:"category_id"`
+	SubcategoryID        uint    `json:"Subcategory_id"`
 	Manufacturer         string  `json:"manufacturer"`
 	PrescriptionRequired bool    `json:"prescription_required"`
 	AvgRating            float64 `json:"avg_rating"`
@@ -23,8 +23,8 @@ type PharmacyCreateRequest struct {
 	Price                float64 `json:"price"`
 	InStock              bool    `json:"in_stock"`
 	StockQuantity        int     `json:"stock_quantity"`
-	CategoryID           string  `json:"category_id"`
-	SubcategoryID        string  `json:"Subcategory_id"`
+	CategoryID           uint    `json:"category_id"`
+	SubcategoryID        uint    `json:"Subcategory_id"`
 	Manufacturer         string  `json:"manufacturer"`
 	PrescriptionRequired bool    `json:"prescription_required"`
 	AvgRating            float64 `json:"avg_rating"`
@@ -37,8 +37,8 @@ type PharmacyUpdateRequest struct {
 	Price                *float64 `json:"price"`
 	InStock              *bool    `json:"in_stock"`
 	StockQuantity        *int     `json:"stock_quantity"`
-	CategoryID           *string  `json:"category_id"`
-	SubcategoryID        *string  `json:"Subcategory_id"`
+	CategoryID           *uint    `json:"category_id"`
+	SubcategoryID        *uint    `json:"Subcategory_id"`
 	Manufacturer         *string  `json:"manufacturer"`
 	PrescriptionRequired *bool    `json:"prescription_required"`
 	AvgRating            *float64 `json:"avg_rating"`

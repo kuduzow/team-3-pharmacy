@@ -34,7 +34,6 @@ func (c *categoryService) CreateCategory(req models.CategoryCreateRequest) (*mod
 		return nil, err
 	}
 	category := &models.Category{
-		ID:   req.ID,
 		Name: req.Name,
 	}
 
@@ -45,9 +44,6 @@ func (c *categoryService) CreateCategory(req models.CategoryCreateRequest) (*mod
 }
 
 func (c *categoryService) validateCategoryCreate(req models.CategoryCreateRequest) error {
-	if req.ID < 0 {
-		return errors.New("айди не может быть отрицательным")
-	}
 
 	if strings.TrimSpace(req.Name) == "" {
 		return errors.New("имя не может быть пустым")

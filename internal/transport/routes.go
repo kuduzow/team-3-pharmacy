@@ -16,6 +16,7 @@ func RegisterRoutes(
 	rewievsServ service.ReviewService,
 	subcategoryServ service.SubCategoryService,
 	userServ service.UserService,
+	cartServ service.CartService,
 ) {
 	categoryHandler := NewCategoryHandler(categoryServ)
 	orderHandler := NewOrderHandler(orderServ)
@@ -25,6 +26,7 @@ func RegisterRoutes(
 	reviewsHandler := NewReviewsHandler(rewievsServ)
 	subcategoryHandler := NewSubCategoryHandler(subcategoryServ)
 	userHandler := NewUserHandler(userServ)
+	cartHandler := NewCartHandler(cartServ)
 
 	categoryHandler.RegisterRoutes(router)
 	orderHandler.Register(router)
@@ -34,4 +36,5 @@ func RegisterRoutes(
 	reviewsHandler.Routes(router)
 	subcategoryHandler.RegisterRoutes(router)
 	userHandler.RegisterRoutes(router)
+	cartHandler.RegisterRoutes(router)
 }
