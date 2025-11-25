@@ -6,7 +6,7 @@ import (
 	"pharmacy-team/internal/repository"
 )
 
-var ErrStudentNotFound = errors.New("студент не найден")
+var ErrUserNotFound = errors.New("студент не найден")
 
 type UserService interface {
 	CreateUser(req models.UserCreate) (*models.User, error)

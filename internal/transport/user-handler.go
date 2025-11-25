@@ -125,6 +125,71 @@ func (h *UserHandler) GetAllUsers(c *gin.Context) {
 	c.JSON(200, users)
 }
 
+func (h *UserHandler) GetUserOrders(c *gin.Context) {
+	idStr := c.Param("id")
+
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Неверный ID пользователя"})
+		return
+	}
+
+	_, err = h.service.GetByUser(uint(id))
+	if err != nil {
+		c.JSON(404, gin.H{"error": "Пользователь не найден"})
+		return
+	}
+
+	// Временная реализация с примером данных
+	c.JSON(200, gin.H{
+		"user_id": id,
+		"orders": []gin.H{
+			{
+				"id":          1,
+				"status":      "completed",
+				"total_price": 15000,
+				"final_price": 15000,
+				"created_at":  "2024-01-15T10:30:00Z",
+				"items_count": 3,
+			},
+		},
+	})
+}
+
+func (h *UserHandler) GetUserCart(c *gin.Context) {
+	idStr := c.Param("id")
+
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Неверный ID пользователя"})
+		return
+	}
+
+	// Проверяем существование пользователя
+	_, err = h.service.GetByUser(uint(id))
+	if err != nil {
+		c.JSON(404, gin.H{"error": "Пользователь не найден"})
+		return
+	}
+
+	// Временная реализация с примером данных
+	c.JSON(200, gin.H{
+		"user_id": id,
+		"items": []gin.H{
+			{
+				"medicine_id":    1,
+				"name":           "Парацетамол",
+				"quantity":       2,
+				"price_per_unit": 5000,
+				"line_total":     10000,
+			},
+		},
+		"total_price": 10000,
+		"total_items": 2,
+	})
+
+}
+
 func (h *UserHandler) RegisterRoutes(r *gin.Engine) {
 	users := r.Group("/users")
 	{
@@ -133,5 +198,8 @@ func (h *UserHandler) RegisterRoutes(r *gin.Engine) {
 		users.PATCH("/:id", h.UpdateUser)
 		users.DELETE("/:id", h.DeleteUser)
 		users.GET("", h.GetAllUsers)
+
+		users.GET("/:id/orders", h.GetUserOrders)
+		users.GET("/:id/cart", h.GetUserCart)
 	}
 }
