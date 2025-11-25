@@ -24,6 +24,7 @@ func main() {
 		&models.Order{},
 		&models.OrderItem{},
 		&models.Payment{},
+		&models.Cart{},
 	); err != nil {
 		log.Fatalf("не удалось выполнить миграции: %v", err)
 	}
@@ -36,6 +37,7 @@ func main() {
 	RewievsRepo := repository.NewReviewRepository(db)
 	SubCategoryRepo := repository.NewSubCategoryRepository(db)
 	UserRepo := repository.NewUserRepository(db)
+	CartRepo := repository.NewCartRepository(db)
 
 	CategoryServ := service.NewCategoryService(CategoryRepo)
 	OrderServ := service.NewOrderService(OrderRepo)
@@ -45,6 +47,7 @@ func main() {
 	RewievsServ := service.NewReviewService(RewievsRepo, PharmacyRepo)
 	SubCategoryServ := service.NewSubCategoryService(SubCategoryRepo)
 	UserServ := service.NewUserService(UserRepo)
+	CartServ := service.NewCartService(CartRepo, PharmacyRepo)
 
 	router := gin.Default()
 
@@ -58,6 +61,8 @@ func main() {
 		RewievsServ,
 		SubCategoryServ,
 		UserServ,
+		CartServ,
 	)
+	router.Run(":8888")
 
 }
