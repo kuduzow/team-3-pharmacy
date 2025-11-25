@@ -102,7 +102,7 @@ func (p *PharmacyHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	if p.service.DeletePharmacy(uint(id)); err != nil {
+	if err := p.service.DeletePharmacy(uint(id)); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}

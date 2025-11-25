@@ -7,8 +7,9 @@ import (
 )
 
 type SubCategoryRepository interface {
-	GetCategoryByID(CategoryID int) ([]models.SubCategory, error)
+	GetSubCategoryByID(CategoryID uint) ([]models.SubCategory, error)
 	GetAllSubCategory() ([]models.SubCategory, error)
+	Create(*models.SubCategory) error
 }
 
 type gormSubCategoryRepository struct {
@@ -25,8 +26,16 @@ func (r *gormSubCategoryRepository) GetAllSubCategory() ([]models.SubCategory, e
 	return subcategory, err
 }
 
-func (r *gormSubCategoryRepository) GetCategoryByID(CategoryID int) ([]models.SubCategory, error) {
+func (r *gormSubCategoryRepository) GetSubCategoryByID(CategoryID uint) ([]models.SubCategory, error) {
 	var subcategories []models.SubCategory
 	err := r.db.Where("category_id = ?", CategoryID).Find(&subcategories).Error
 	return subcategories, err
+}
+
+func (r *gormSubCategoryRepository) Create(subcategory *models.SubCategory) error {
+	if subcategory == nil {
+		return nil
+	}
+	return r.db.Save(subcategory).Error
+
 }

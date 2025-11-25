@@ -22,9 +22,7 @@ type Promocode struct {
 	MinOrderAmount float64      `json:"min_order_amount" gorm:"type:decimal(10,2);default:0"`
 	ValidFrom      time.Time    `json:"valid_from"`
 	ValidTo        time.Time    `json:"valid_to"`
-	MaxUses        *int         `json:"max_uses"`
 	CurrentUses    int          `json:"current_uses" gorm:"default:0"`
-	MaxUsesPerUser *int         `json:"max_uses_per_user"`
 	IsActive       bool         `json:"is_active" gorm:"default:true"`
 }
 
@@ -36,11 +34,9 @@ type PromocodeCreate struct {
 	MinOrderAmount float64      `json:"min_order_amount" `
 	ValidFrom      time.Time    `json:"valid_from" `
 	ValidTo        time.Time    `json:"valid_to" `
-	MaxUses        *int         `json:"max_uses" `
-	MaxUsesPerUser *int         `json:"max_uses_per_user" `
 }
 
-type PromocodeUpdateRequest struct {
+type PromocodeUpdate struct {
 	Code           *string       `json:"code"`
 	Description    *string       `json:"description"`
 	DiscountType   *DiscountType `json:"discount_type"`
@@ -48,7 +44,5 @@ type PromocodeUpdateRequest struct {
 	ValidFrom      *time.Time    `json:"valid_from"`
 	ValidTo        *time.Time    `json:"valid_to"`
 	MinOrderAmount *float64      `json:"min_order_amount"`
-	MaxUses        *int          `json:"max_uses"`
-	MaxUsesPerUser *int          `json:"max_uses_per_user"`
 	IsActive       *bool         `json:"is_active"`
 }
