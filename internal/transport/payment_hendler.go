@@ -13,7 +13,7 @@ type PaymentHandler struct {
 }
 
 func NewPaymentHandler(s service.PaymentService) *PaymentHandler {
-	return &PaymentHandler{s}
+	return &PaymentHandler{servicePayment: s}
 }
 
 func (t *PaymentHandler) RegisterRoutes(r *gin.Engine) {
@@ -31,7 +31,7 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 		return
 	}
 
-	payment, err := h.servicePayment.Create(uint(orderID),req)
+	payment, err := h.servicePayment.Create(uint(orderID), req)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -52,19 +52,19 @@ func (h *PaymentHandler) GetPaymentsByOrder(c *gin.Context) {
 	c.JSON(200, payments)
 }
 func (t *PaymentHandler) GetPaymentById(c *gin.Context) {
-    id := c.Param("id")
+	id := c.Param("id")
 
-    paymentID, err := strconv.ParseUint(id, 10, 64)
-    if err != nil {
-        c.JSON(400, gin.H{"error": "invalid payment id"})
-        return
-    }
+	paymentID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "invalid payment id"})
+		return
+	}
 
-    payment, err := t.servicePayment.Get(uint(paymentID))
-    if err != nil {
-        c.JSON(404, gin.H{"error": err.Error()})
-        return
-    }
+	payment, err := t.servicePayment.Get(uint(paymentID))
+	if err != nil {
+		c.JSON(404, gin.H{"error": err.Error()})
+		return
+	}
 
-    c.JSON(200, payment)
+	c.JSON(200, payment)
 }
