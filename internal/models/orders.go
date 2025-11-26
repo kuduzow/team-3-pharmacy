@@ -35,9 +35,10 @@ type Order struct {
 	Comment         string             `gorm:"type:text"`
 	PromoCode       *string            `gorm:"type:varchar(50)"`
 
-	Items    []OrderItem 
-	Payments []Payment   
+	Items    []OrderItem `gorm:"foreignKey:OrderID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Payments []Payment   `gorm:"foreignKey:OrderID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
+
 
 type OrderCreate struct {
 	DeliveryAddress string  `json:"delivery_address" binding:"required"`

@@ -28,8 +28,10 @@ func (r *orderRepository) Create(order *models.Order) error {
 
 func (r *orderRepository) GetByID(id uint) (*models.Order, error) {
 	var order models.Order
-	err := r.db.Preload("Товар").Preload("Оплата").First(&order, id).Error
-	return &order, err
+	if err := r.db.Preload("Items").Preload("Payments").First(&order, id).Error; err != nil {
+		return nil, err
+	}
+	return &order, nil
 }
 
 func (r *orderRepository) GetByUserID(userID uint) ([]models.Order, error) {
