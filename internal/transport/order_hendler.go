@@ -19,7 +19,7 @@ func NewOrderHandler(s service.OrderService) *OrderHandler {
 func (h *OrderHandler) Register(r *gin.Engine) {
 	r.POST("/users/:id/orders", h.CreateOrder)
 	r.GET("/orders/:id", h.GetOrder)
-	r.GET("/users/:id/orders", h.GetUserOrders)
+	r.GET("/users/:id/orders", h.GetuserOrders)
 	r.PATCH("/orders/:id/status", h.UpdateStatus)
 }
 
@@ -61,7 +61,7 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 	c.JSON(200, order)
 }
 
-func (h *OrderHandler) GetUserOrders(c *gin.Context) {
+func (h *OrderHandler) GetuserOrders(c *gin.Context) {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(400, gin.H{"error": "invalid user ID"})

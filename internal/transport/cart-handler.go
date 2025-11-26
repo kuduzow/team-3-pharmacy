@@ -17,7 +17,6 @@ func NewCartHandler(service service.CartService) *CartHandler {
 }
 func (h *CartHandler) RegisterRoutes(r *gin.Engine) {
 	r.POST("/users/:id/cart/items", h.CreateItem)
-	r.GET("/users/:id/cart", h.GetCart)
 	r.PATCH("/users/:id/cart/items/:item_id", h.UpdateItem)
 	r.DELETE("/users/:id/cart/items/:item_id", h.DeleteItem)
 	r.DELETE("/users/:id/cart", h.DeleteCart)
@@ -117,7 +116,7 @@ func (h *CartHandler) DeleteItem(c *gin.Context) {
 }
 
 func (h *CartHandler) DeleteCart(c *gin.Context) {
-	idStr := c.Param("id")	
+	idStr := c.Param("id")
 	userID64, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "invalid user id"})
