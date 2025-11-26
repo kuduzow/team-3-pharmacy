@@ -9,17 +9,17 @@ import (
 )
 
 type PaymentHandler struct {
-	servicePayment service.PaymentService
+	service service.PaymentService
 }
 
 func NewPaymentHandler(s service.PaymentService) *PaymentHandler {
-	return &PaymentHandler{servicePayment: s}
+	return &PaymentHandler{service: s}
 }
 
-func (t *PaymentHandler) RegisterRoutes(r *gin.Engine) {
-	r.POST("/orders/:id/payments", t.CreatePayment)
-	r.GET("/orders/:id/payments", t.GetPaymentsByOrder)
-	r.GET("/payments/:id", t.GetPaymentById)
+func (h *PaymentHandler) RegisterRoutes(r *gin.Engine) {
+	r.POST("/orders/:id/payments", h.CreatePayment)
+	r.GET("/orders/:id/payments", h.GetPaymentsByOrder)
+	r.GET("/payments/:id", h.GetPaymentById)
 }
 
 func (h *PaymentHandler) CreatePayment(c *gin.Context) {
@@ -31,7 +31,7 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 		return
 	}
 
-	payment, err := h.servicePayment.Create(uint(orderID), req)
+	payment, err := h.service.Create(uint(orderID), req)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -43,7 +43,7 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 func (h *PaymentHandler) GetPaymentsByOrder(c *gin.Context) {
 	orderID, _ := strconv.Atoi(c.Param("id"))
 
-	payments, err := h.servicePayment.ListByOrder(uint(orderID))
+	payments, err := h.service.ListByOrder(uint(orderID))
 	if err != nil {
 		c.JSON(404, gin.H{"error": err.Error()})
 		return
@@ -51,20 +51,13 @@ func (h *PaymentHandler) GetPaymentsByOrder(c *gin.Context) {
 
 	c.JSON(200, payments)
 }
-func (t *PaymentHandler) GetPaymentById(c *gin.Context) {
-	id := c.Param("id")
 
-	paymentID, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		c.JSON(400, gin.H{"error": "invalid payment id"})
-		return
-	}
-
-	payment, err := t.servicePayment.Get(uint(paymentID))
+func (h *PaymentHandler) GetPaymentById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	payment, err := h.service.Get(uint(id))
 	if err != nil {
 		c.JSON(404, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(200, payment)
 }

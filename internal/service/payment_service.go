@@ -26,11 +26,11 @@ func NewPaymentService(payRepo repository.PaymentRepository, orderRepo repositor
 func (s *paymentService) Create(orderID uint, req models.PaymentCreate) (*models.Payment, error) {
 	order, err := s.orderRepo.GetByID(orderID)
 	if err != nil {
-		return nil, errors.New("не нашлось")
+		return nil, errors.New("заказ не найден")
 	}
 
 	if order.Status != models.OrderStatusPendingPayment && order.Status != models.OrderStatusPaid {
-		return nil, errors.New("нет такого заказа")
+		return nil, errors.New("заказ не доступен для оплаты")
 	}
 
 	remaining := order.FinalPrice - order.PaidAmount
@@ -43,29 +43,29 @@ func (s *paymentService) Create(orderID uint, req models.PaymentCreate) (*models
 	}
 
 	payment := &models.Payment{
-		OrderID: orderID, // <- это
+		OrderID: orderID,
 		Amount:  req.Amount,
 		Status:  req.Status,
 		Method:  req.Method,
 		PaidAt:  req.PaidAt,
 	}
 
-	payment.OrderID = orderID
-
-	if err = s.payRepo.Create(payment); err != nil {
+	if err := s.payRepo.Create(payment); err != nil {
 		return nil, err
 	}
 
+	// Обновляем статус оплаты заказа
 	if payment.Status == models.PaySuccess {
 		order.PaidAmount += payment.Amount
 		if order.PaidAmount >= order.FinalPrice {
 			order.PaymentStatus = models.OrderPaymentPaid
 			order.Status = models.OrderStatusPaid
-		} else if order.PaidAmount > 0 {
+		} else {
 			order.PaymentStatus = models.OrderPaymentPartiallyPaid
 		}
-		s.orderRepo.Update(order)
+		_ = s.orderRepo.Update(order)
 	}
+
 	return payment, nil
 }
 
@@ -78,6 +78,7 @@ func (s *paymentService) Delete(id uint) error {
 	if err != nil {
 		return err
 	}
+
 	if pay.Status == models.PaySuccess {
 		order, _ := s.orderRepo.GetByID(pay.OrderID)
 		order.PaidAmount -= pay.Amount
@@ -88,8 +89,9 @@ func (s *paymentService) Delete(id uint) error {
 		} else if order.PaidAmount < order.FinalPrice {
 			order.PaymentStatus = models.OrderPaymentPartiallyPaid
 		}
-		s.orderRepo.Update(order)
+		_ = s.orderRepo.Update(order)
 	}
+
 	return s.payRepo.Delete(id)
 }
 

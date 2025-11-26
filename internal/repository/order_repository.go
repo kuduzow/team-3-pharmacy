@@ -1,9 +1,7 @@
 package repository
 
 import (
-	
 	"pharmacy-team/internal/models"
-
 	"gorm.io/gorm"
 )
 
@@ -28,7 +26,10 @@ func (r *orderRepository) Create(order *models.Order) error {
 
 func (r *orderRepository) GetByID(id uint) (*models.Order, error) {
 	var order models.Order
-	if err := r.db.Preload("Items").Preload("Payments").First(&order, id).Error; err != nil {
+	if err := r.db.Preload("Items").
+		Preload("Payments").
+		Preload("Cart.Items").
+		First(&order, id).Error; err != nil {
 		return nil, err
 	}
 	return &order, nil
@@ -36,11 +37,10 @@ func (r *orderRepository) GetByID(id uint) (*models.Order, error) {
 
 func (r *orderRepository) GetByUserID(userID uint) ([]models.Order, error) {
 	var orders []models.Order
-	err := r.db.Where("user_id = ?", userID).Find(&orders).Error
-	if err != nil {
-		return nil,err
+	if err := r.db.Where("user_id = ?", userID).Preload("Items").Preload("Payments").Find(&orders).Error; err != nil {
+		return nil, err
 	}
-	return orders, err
+	return orders, nil
 }
 
 func (r *orderRepository) Update(order *models.Order) error {
