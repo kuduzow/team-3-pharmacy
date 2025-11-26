@@ -17,7 +17,6 @@ type ReviewService interface {
 type reviewService struct {
 	reviews  repository.ReviewRepository
 	pharmacy repository.PharmacyRepository
-	order    repository.OrderRepository
 }
 
 func NewReviewService(
@@ -31,10 +30,6 @@ func NewReviewService(
 }
 
 func (r *reviewService) CreateReview(req models.CreateReviewRequest) (*models.Review, error) {
-
-	if err := r.reviews.CanUserReviewMedicine(req.UserID, req.MedicineID); err != nil {
-		return nil, err
-	}
 
 	if err := r.validateReview(req); err != nil {
 		return nil, err
@@ -99,15 +94,9 @@ func (r *reviewService) DeleteReview(id uint) error {
 }
 
 func (r *reviewService) ListPharmacyReview(pharmacyID uint) ([]models.Review, error) {
-	if _, err := r.reviews.GetByID(pharmacyID); err != nil {
-		return nil, err
-	}
-
 	reviews, err := r.reviews.GetReviewsByPharmacyID(pharmacyID)
-
 	if err != nil {
 		return nil, err
 	}
-
 	return reviews, nil
 }
