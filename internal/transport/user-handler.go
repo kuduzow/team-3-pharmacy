@@ -199,7 +199,6 @@ func (h *UserHandler) RegisterRoutes(r *gin.Engine) {
 		users.DELETE("/:id", h.DeleteUser)
 		users.GET("", h.GetAllUsers)
 
-		users.GET("/:id/orders", h.GetUserOrders)
 		users.GET("/:id/cart", h.GetUserCart)
 	}
 }
