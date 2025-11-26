@@ -41,7 +41,7 @@ func main() {
 	CartRepo := repository.NewCartRepository(db)
 
 	CategoryServ := service.NewCategoryService(CategoryRepo)
-	OrderServ := service.NewOrderService(OrderRepo)
+	OrderServ := service.NewOrderService(OrderRepo,CartRepo)
 	PaymentServ := service.NewPaymentService(PaymentRepo, OrderRepo)
 	PharmacyServ := service.NewPharmacyService(PharmacyRepo)
 	PromocodeServ := service.NewPromocodeService(PromocodeRepo)

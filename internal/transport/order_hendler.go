@@ -19,14 +19,14 @@ func NewOrderHandler(s service.OrderService) *OrderHandler {
 func (h *OrderHandler) Register(r *gin.Engine) {
 	r.POST("/users/:id/orders", h.CreateOrder)
 	r.GET("/orders/:id", h.GetOrder)
-	r.GET("/users/:id/orders", h.GetuserOrders)
+	r.GET("/users/:id/orders", h.GetUserOrders)
 	r.PATCH("/orders/:id/status", h.UpdateStatus)
 }
 
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(400, gin.H{"error": "invalid user ID"})
+		c.JSON(400, gin.H{"error": "неверный идентификатор"})
 		return
 	}
 
@@ -46,43 +46,27 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 }
 
 func (h *OrderHandler) GetOrder(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(400, gin.H{"error": "invalid order ID"})
-		return
-	}
-
+	id, _ := strconv.Atoi(c.Param("id"))
 	order, err := h.service.GetOrder(uint(id))
 	if err != nil {
 		c.JSON(404, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(200, order)
 }
 
-func (h *OrderHandler) GetuserOrders(c *gin.Context) {
-	userID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(400, gin.H{"error": "invalid user ID"})
-		return
-	}
-
+func (h *OrderHandler) GetUserOrders(c *gin.Context) {
+	userID, _ := strconv.Atoi(c.Param("id"))
 	orders, err := h.service.GetUserOrders(uint(userID))
 	if err != nil {
 		c.JSON(404, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(200, orders)
 }
 
 func (h *OrderHandler) UpdateStatus(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(400, gin.H{"error": "invalid order ID"})
-		return
-	}
+	id, _ := strconv.Atoi(c.Param("id"))
 
 	var req struct {
 		Status models.OrderStatus `json:"status"`
@@ -97,6 +81,5 @@ func (h *OrderHandler) UpdateStatus(c *gin.Context) {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(200, order)
 }
