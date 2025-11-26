@@ -25,6 +25,7 @@ func main() {
 		&models.OrderItem{},
 		&models.Payment{},
 		&models.Cart{},
+		&models.Promocode{},
 	); err != nil {
 		log.Fatalf("не удалось выполнить миграции: %v", err)
 	}

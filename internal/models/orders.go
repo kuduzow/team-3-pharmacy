@@ -50,6 +50,7 @@ type OrderItem struct {
 	LineTotal    int    `gorm:"not null"`
 }
 
+
 type OrderCreate struct {
 	DeliveryAddress string  `json:"delivery_address" binding:"required"`
 	Comment         string  `json:"comment,omitempty"`
